@@ -1,16 +1,11 @@
 #lang racket
 
-
 (define (mapToInts lst)
   (map string->number lst))
 
 (define (allPositive lst)
   (for/and ([x lst])
     (positive? x)))
-
-(define (allNegative lst)
-  (for/and ([x lst])
-    (negative? x)))
 
 ; create a new list with the differences between each element
 
@@ -22,20 +17,18 @@
 (define (differences lst)
   (reverse (differenceHelper lst '())))
 
-(define (toPositive lst)
-  (map abs lst))
-
 (define (isMonotone lst)
   (or (allPositive (differences lst) )
-      (allNegative (differences lst))))
+      (allPositive (differences (reverse lst)))))
 
 
 (define (allBetween1And3 lst)
   (for/and ([x lst])
-    (and (<= 1 x) (<= x 3))))
+    (or (and (<= 1 x) (<= x 3))
+     (and (>= (- 0 1) x) (>= x (- 0 3))))))
 
 (define (isSafe lst)
-  (and (isMonotone lst) (allBetween1And3 (toPositive (differences lst)))))
+  (and (isMonotone lst) (allBetween1And3 (differences lst))))
 
 (define (processLine line) 
   (isSafe (mapToInts (string-split line " "))))
